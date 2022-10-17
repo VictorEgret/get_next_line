@@ -12,21 +12,6 @@
 
 #include "get_next_line.h"
 
-void	*ft_memcpy(void *dest, const void *src, size_t n)
-{
-	size_t	i;
-
-	if (!dest && !src)
-		return (NULL);
-	i = 0;
-	while (i < n)
-	{
-		*((unsigned char *) dest + i) = *((unsigned char *) src + i);
-		i++;
-	}
-	return (dest);
-}
-
 size_t	ft_strlen(const char *s)
 {
 	size_t	len;
@@ -35,6 +20,19 @@ size_t	ft_strlen(const char *s)
 	while (s[len])
 		len++;
 	return (len);
+}
+
+void	ft_strcpy(char	*dest, char *src)
+{
+	int	i;
+
+	i = 0;
+	while (src[i])
+	{
+		dest[i] = src[i];
+		i++;
+	}
+	dest[i] = '\0';
 }
 
 char	*ft_substr(char *s, unsigned int start, size_t len, int f)
@@ -56,41 +54,10 @@ char	*ft_substr(char *s, unsigned int start, size_t len, int f)
 	result = malloc(result_len + 1);
 	if (!result)
 		return (NULL);
-	result = ft_memcpy(result, s + start, result_len);
-	result[result_len] = '\0';
+	ft_strcpy(result, s + start);
 	if (f)
 		free(s);
 	return (result);
-}
-
-void	ft_strcpy(char	*dest, char *src)
-{
-	int	i;
-
-	i = 0;
-	while (src[i])
-	{
-		dest[i] = src[i];
-		i++;
-	}
-	dest[i] = '\0';
-}
-
-void	ft_strcat(char *dest, char *src)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (dest[i])
-		i++;
-	j = i;
-	while (src[i - j])
-	{
-		dest[i] = src[i - j];
-		i++;
-	}
-	dest[i] = '\0';
 }
 
 char	*ft_strdup(const char *s)
@@ -122,7 +89,6 @@ char	*strconcat(char *s1, char *s2)
 		return (NULL);
 	ft_strcpy(result, s1);
 	ft_strcpy(result + ft_strlen(s1), s2);
-	//ft_strcat(result, s2); // copier a result + strlen s1
 	free(s1);
 	return (result);
 }

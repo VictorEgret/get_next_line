@@ -11,13 +11,6 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <unistd.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#define BUFFER_SIZE 8
 
 void	*ft_memcpy(void *dest, const void *src, size_t n)
 {
@@ -44,7 +37,7 @@ size_t	ft_strlen(const char *s)
 	return (len);
 }
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char	*ft_substr(char *s, unsigned int start, size_t len, int f)
 {
 	char	*result;
 	size_t	result_len;
@@ -53,6 +46,8 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	{
 		result = malloc(sizeof(char));
 		*result = '\0';
+		if (f)
+			free(s);
 		return (result);
 	}
 	result_len = ft_strlen(s) - start;
@@ -63,6 +58,8 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		return (NULL);
 	result = ft_memcpy(result, s + start, result_len);
 	result[result_len] = '\0';
+	if (f)
+		free(s);
 	return (result);
 }
 
@@ -76,7 +73,7 @@ void	ft_strcpy(char	*dest, char *src)
 		dest[i] = src[i];
 		i++;
 	}
-	dest[i] = 0;
+	dest[i] = '\0';
 }
 
 void	ft_strcat(char *dest, char *src)
@@ -93,19 +90,39 @@ void	ft_strcat(char *dest, char *src)
 		dest[i] = src[i - j];
 		i++;
 	}
-	dest[i] = 0;
+	dest[i] = '\0';
+}
+
+char	*ft_strdup(const char *s)
+{
+	char	*result;
+	int		i;
+
+	result = malloc(sizeof(char) * (ft_strlen(s) + 1));
+	if (!result)
+		return (NULL);
+	i = 0;
+	while (s[i] != '\0')
+	{
+		result[i] = s[i];
+		i++;
+	}
+	result[i] = '\0';
+	return (result);
 }
 
 char	*strconcat(char *s1, char *s2)
 {
 	char	*result;
 
+	if (!s1)
+		return (ft_strdup(s2));
 	result = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
 	if (!result)
 		return (NULL);
-	*result = 0;
 	ft_strcpy(result, s1);
-	ft_strcat(result, s2);
+	ft_strcpy(result + ft_strlen(s1), s2);
+	//ft_strcat(result, s2); // copier a result + strlen s1
 	free(s1);
 	return (result);
 }
@@ -114,8 +131,10 @@ int	strindex(char *str, char c)
 {
 	int	i;
 
+	if (!str)
+		return (-1);
 	i = 0;
-	while(str[i])
+	while (str[i])
 	{
 		if (str[i] == c)
 			return (i);
@@ -129,18 +148,17 @@ char	*get_next_line(int fd)
 	static char	*stash;
 	char		*tmp;
 	int			rd;
+	int			endl;
 
-	stash = malloc(BUFFER_SIZE * sizeof(char));
-	if (!stash)
+	if (fd < 0 || BUFFER_SIZE < 1)
 		return (NULL);
-	rd = read(fd, stash, BUFFER_SIZE);
-	if (rd == -1)
-		return (NULL);
-	stash[rd] = 0;
-	//write(1, "HERE\n", 5);
-	while (rd == BUFFER_SIZE && strindex(stash, '\n') == -1)
+	rd = BUFFER_SIZE;
+	endl = -1;
+	while (rd == BUFFER_SIZE && endl == -1)
 	{
 		tmp = malloc((BUFFER_SIZE + 1) * sizeof(char));
+		if (!tmp)
+			return (NULL);
 		rd = read(fd, tmp, BUFFER_SIZE);
 		if (rd == -1)
 		{
@@ -148,21 +166,16 @@ char	*get_next_line(int fd)
 			free(tmp);
 			return (NULL);
 		}
-		tmp[rd] = 0;
-		printf("tmp: %s\n", tmp);
-		stash = strconcat(stash, tmp); // convertir pour un pointer -> tableau 
+		tmp[rd] = '\0';
+		stash = strconcat(stash, tmp);
 		free(tmp);
+		endl = strindex(stash, '\n');
 	}
-	return (ft_substr(stash, 0, strindex(stash, '\n') + 1)); // convertir pour un pointer -> tableau 
-}
-
-int main()
-{
-	int fd = open("test.txt", O_RDONLY);
-	//get_next_line(fd);
-	//get_next_line(fd);
-	//printf("%s", get_next_line(fd));
-	printf("%s", get_next_line(fd));
-
-	return 0;
+	if (!*stash)
+		return (NULL);
+	if (endl == -1)
+		endl = ft_strlen(stash);
+	tmp = ft_substr(stash, 0, endl + 1, 0);
+	stash = ft_substr(stash, endl + 1, ft_strlen(stash) + 1, 1);
+	return (tmp);
 }

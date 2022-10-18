@@ -6,7 +6,7 @@
 /*   By: vegret <victor.egret.pro@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 15:26:22 by vegret            #+#    #+#             */
-/*   Updated: 2022/10/13 15:26:22 by vegret           ###   ########.fr       */
+/*   Updated: 2022/10/18 02:50:03 by vegret           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,21 +25,6 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 		i++;
 	}
 	return (dest);
-}
-
-void	ft_strcpy(char	*dest, char *src)
-{
-	int	i;
-
-	if (!dest && !src)
-		return ;
-	i = 0;
-	while (src[i])
-	{
-		dest[i] = src[i];
-		i++;
-	}
-	dest[i] = '\0';
 }
 
 size_t	ft_strlen(const char *s)
@@ -74,35 +59,28 @@ char	*ft_substr(char *s, unsigned int start, size_t len)
 	return (result);
 }
 
-char	*ft_strdup(const char *s)
-{
-	char	*result;
-	int		i;
-
-	result = malloc(sizeof(char) * (ft_strlen(s) + 1));
-	if (!result)
-		return (NULL);
-	i = 0;
-	while (s[i] != '\0')
-	{
-		result[i] = s[i];
-		i++;
-	}
-	result[i] = '\0';
-	return (result);
-}
-
 char	*strconcat(char *s1, char *s2)
 {
 	char	*result;
+	int		len;
 
+	len = ft_strlen(s2);
 	if (!s1)
-		return (ft_strdup(s2));
-	result = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	{
+		result = malloc((len + 1) * sizeof(char));
+		if (!result)
+			return (NULL);
+		ft_memcpy(result, s2, len);
+		result[len] = '\0';
+		return (result);
+	}
+	len += ft_strlen(s1);
+	result = malloc((len + 1) * sizeof(char));
 	if (!result)
 		return (NULL);
-	ft_strcpy(result, s1);
-	ft_strcpy(result + ft_strlen(s1), s2);
+	ft_memcpy(result, s1, ft_strlen(s1));
+	ft_memcpy(result + ft_strlen(s1), s2, ft_strlen(s2));
+	result[len] = '\0';
 	free(s1);
 	return (result);
 }

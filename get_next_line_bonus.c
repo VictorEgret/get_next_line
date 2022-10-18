@@ -40,12 +40,12 @@ char	*read_next_line(int fd, char **stash, int *endl)
 
 char	*get_next_line(int fd)
 {
-	static char	*stash[1024];
+	static char	*stash[MAX_FILES];
 	char		*line;
 	char		*old_stash;
 	int			endl;
 
-	if (fd < 0 || BUFFER_SIZE < 1)
+	if (fd < 0 || BUFFER_SIZE < 1 || fd >= MAX_FILES)
 		return (NULL);
 	endl = -1;
 	read_next_line(fd, &stash[fd], &endl);

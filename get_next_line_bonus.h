@@ -15,6 +15,9 @@
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 8
 # endif
+# ifndef MAX_FILES
+#  define MAX_FILES 1024
+# endif
 # include <stdlib.h>
 # include <unistd.h>
 

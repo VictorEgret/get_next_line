@@ -22,7 +22,10 @@ char	*read_next_line(int fd, char **stash, int *endl)
 	{
 		tmp = malloc((BUFFER_SIZE + 1) * sizeof(char));
 		if (!tmp)
+		{
+			free(*stash);
 			return (NULL);
+		}
 		rd = read(fd, tmp, BUFFER_SIZE);
 		if (rd == -1)
 		{

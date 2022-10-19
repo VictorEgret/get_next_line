@@ -19,7 +19,7 @@
 # include <unistd.h>
 
 char	*get_next_line(int fd);
-char	*strconcat(char *s1, char *s2);
+char	*strconcat(char *s1, char *s2, int s1len, int s2len);
 char	*ft_substr(char *s, unsigned int start, size_t len);
 size_t	ft_strlen(const char *s);
 int		strindex(char *str, char c);

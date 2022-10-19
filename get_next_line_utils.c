@@ -59,28 +59,18 @@ char	*ft_substr(char *s, unsigned int start, size_t len)
 	return (result);
 }
 
-char	*strconcat(char *s1, char *s2)
+char	*strconcat(char *s1, char *s2, int s1len, int s2len)
 {
 	char	*result;
-	int		len;
 
-	len = ft_strlen(s2);
-	if (!s1)
-	{
-		result = malloc((len + 1) * sizeof(char));
-		if (!result)
-			return (NULL);
-		ft_memcpy(result, s2, len);
-		result[len] = '\0';
-		return (result);
-	}
-	len += ft_strlen(s1);
-	result = malloc((len + 1) * sizeof(char));
+	result = malloc((s1len + s2len + 1) * sizeof(char));
 	if (!result)
 		return (NULL);
-	ft_memcpy(result, s1, ft_strlen(s1));
-	ft_memcpy(result + ft_strlen(s1), s2, ft_strlen(s2));
-	result[len] = '\0';
+	if (s1)
+		ft_memcpy(result, s1, s1len);
+	if (s2)
+		ft_memcpy(result + s1len * (s1 != NULL), s2, s2len);
+	result[s1len + s2len] = '\0';
 	free(s1);
 	return (result);
 }

@@ -12,25 +12,28 @@
 
 #include "get_next_line.h"
 
-char	*read_next_line(int fd, char *stash, int *endl)
+char	*read_next_line(int fd, char *stash)
 {
 	char	*tmp;
 	int		rd;
+	int		len;
 
 	rd = BUFFER_SIZE;
+	len = ft_strlen(stash);
 	tmp = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!tmp)
 		return (NULL);
-	while (rd == BUFFER_SIZE && *endl == -1)
+	*tmp = '\0';
+	while (rd == BUFFER_SIZE && strindex(tmp, '\n') == -1)
 	{
 		rd = read(fd, tmp, BUFFER_SIZE);
 		if (rd == -1)
 			break ;
 		tmp[rd] = '\0';
-		stash = strconcat(stash, tmp);
+		stash = strconcat(stash, tmp, len, rd);
 		if (!stash)
 			break ;
-		*endl = strindex(stash, '\n');
+		len += rd;
 	}
 	free(tmp);
 	return (stash);
@@ -45,10 +48,10 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || BUFFER_SIZE < 1)
 		return (NULL);
-	endl = -1;
-	stash = read_next_line(fd, stash, &endl);
+	stash = read_next_line(fd, stash);
 	if (!stash || !*stash)
 		return (NULL);
+	endl = strindex(stash, '\n');
 	if (endl == -1)
 		endl = ft_strlen(stash);
 	line = ft_substr(stash, 0, endl + 1);

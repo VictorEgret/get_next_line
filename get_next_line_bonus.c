@@ -12,33 +12,28 @@
 
 #include "get_next_line_bonus.h"
 
-char	*read_next_line(int fd, char **stash, int *endl)
+char	*read_next_line(int fd, char *stash, int *endl)
 {
 	char	*tmp;
 	int		rd;
 
 	rd = BUFFER_SIZE;
+	tmp = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!tmp)
+		return (NULL);
 	while (rd == BUFFER_SIZE && *endl == -1)
 	{
-		tmp = malloc((BUFFER_SIZE + 1) * sizeof(char));
-		if (!tmp)
-		{
-			free(*stash);
-			return (NULL);
-		}
 		rd = read(fd, tmp, BUFFER_SIZE);
 		if (rd == -1)
-		{
-			free(*stash);
-			free(tmp);
-			return (NULL);
-		}
+			break ;
 		tmp[rd] = '\0';
-		*stash = strconcat(*stash, tmp);
-		free(tmp);
-		*endl = strindex(*stash, '\n');
+		stash = strconcat(stash, tmp);
+		if (!stash)
+			break ;
+		*endl = strindex(stash, '\n');
 	}
-	return (*stash);
+	free(tmp);
+	return (stash);
 }
 
 char	*get_next_line(int fd)
@@ -51,7 +46,7 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE < 1 || fd >= MAX_FILES)
 		return (NULL);
 	endl = -1;
-	read_next_line(fd, &stash[fd], &endl);
+	stash[fd] = read_next_line(fd, stash[fd], &endl);
 	if (!stash[fd] || !*stash[fd])
 		return (NULL);
 	if (endl == -1)

@@ -6,7 +6,7 @@
 /*   By: vegret <victor.egret.pro@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 15:25:56 by vegret            #+#    #+#             */
-/*   Updated: 2022/10/18 02:58:29 by vegret           ###   ########.fr       */
+/*   Updated: 2022/10/20 22:18:01 by vegret           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,9 @@
 # include <unistd.h>
 
 char	*get_next_line(int fd);
-char	*strconcat(char *s1, char *s2, int s1len, int s2len);
+char	*get_line(char **stash, int len);
 char	*ft_substr(char *s, unsigned int start, size_t len);
+char	*strconcat(char *s1, char *s2, int s1len, int s2len);
 size_t	ft_strlen(const char *s);
 int		strindex(char *str, char c);
 

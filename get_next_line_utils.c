@@ -6,7 +6,7 @@
 /*   By: vegret <victor.egret.pro@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 15:26:22 by vegret            #+#    #+#             */
-/*   Updated: 2022/10/18 02:50:03 by vegret           ###   ########.fr       */
+/*   Updated: 2022/10/20 22:17:37 by vegret           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,26 +39,28 @@ size_t	ft_strlen(const char *s)
 	return (len);
 }
 
-char	*ft_substr(char *s, unsigned int start, size_t len)
+char	*get_line(char **stash, int len)
 {
-	char	*result;
-	size_t	result_len;
+	int		endl;
+	char	*line;
+	char	*new_stash;
 
-	if (!s || ft_strlen(s) <= start)
-	{
-		result = malloc(sizeof(char));
-		*result = '\0';
-		return (result);
-	}
-	result_len = ft_strlen(s) - start;
-	if (result_len > len)
-		result_len = len;
-	result = malloc(result_len + 1);
-	if (!result)
+	endl = strindex(*stash, '\n') + 1;
+	if (endl == 0)
+		endl = len;
+	line = malloc((endl + 1) * sizeof(char));
+	if (!line)
 		return (NULL);
-	result = ft_memcpy(result, s + start, result_len);
-	result[result_len] = '\0';
-	return (result);
+	ft_memcpy(line, *stash, endl);
+	line[endl] = '\0';
+	new_stash = malloc((len - endl + 1) * sizeof(char));
+	if (!new_stash)
+		return (NULL);
+	ft_memcpy(new_stash, *stash + endl, len - endl);
+	new_stash[len - endl] = '\0';
+	free(*stash);
+	*stash = new_stash;
+	return (line);
 }
 
 char	*strconcat(char *s1, char *s2, int s1len, int s2len)

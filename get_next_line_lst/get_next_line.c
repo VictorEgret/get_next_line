@@ -6,7 +6,7 @@
 /*   By: vegret <victor.egret.pro@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 15:25:50 by vegret            #+#    #+#             */
-/*   Updated: 2022/10/28 23:31:57 by vegret           ###   ########.fr       */
+/*   Updated: 2022/11/10 13:46:31 by vegret           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	read_next_line(int fd, t_list **stash, int *line_length)
 		if (!new)
 			break ;
 		rd = read(fd, new->content, BUFFER_SIZE);
-		if (rd < 1)
+		if (rd == -1 || rd == 0)
 			return (free(new));
 		(new->content)[rd] = '\0';
 		if (!prev)
@@ -61,6 +61,11 @@ void	remove_first_line(t_list **stash)
 	while ((*stash)->content[i])
 		(*stash)->content[j++] = (*stash)->content[i++];
 	(*stash)->content[j] = '\0';
+	if (ft_strlstlen(*stash) == 0)
+	{
+		free(*stash);
+		*stash = NULL;
+	}
 }
 
 char	*get_next_line(int fd)

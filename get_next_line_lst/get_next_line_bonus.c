@@ -6,7 +6,7 @@
 /*   By: vegret <victor.egret.pro@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 15:25:50 by vegret            #+#    #+#             */
-/*   Updated: 2022/11/06 14:43:29 by vegret           ###   ########.fr       */
+/*   Updated: 2022/11/10 13:54:01 by vegret           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	read_next_line(int fd, t_list **stash, int *line_length)
 		if (!new)
 			break ;
 		rd = read(fd, new->content, BUFFER_SIZE);
-		if (rd < 1)
+		if (rd == 0 || rd == -1)
 			return (free(new));
 		(new->content)[rd] = '\0';
 		if (!prev)
@@ -61,52 +61,26 @@ void	remove_first_line(t_list **stash)
 	while ((*stash)->content[i])
 		(*stash)->content[j++] = (*stash)->content[i++];
 	(*stash)->content[j] = '\0';
-}
-
-#include <stdio.h>
-
-t_list	*get_stash(t_map **stashs, int fd)
-{
-	t_map	*tmp;
-	t_map	*prev;
-
-	prev = NULL;
-	tmp = *stashs;
-	while (tmp)
+	if (ft_strlstlen(*stash) == 0)
 	{
-		if (tmp->fd == fd)
-			return (tmp->stash);
-		prev = tmp;
-		tmp = tmp->next;
+		free(*stash);
+		*stash = NULL;
 	}
-	tmp = malloc(sizeof(t_map));
-	if (!tmp)
-		return (NULL);
-	tmp->fd = fd;
-	tmp->next = NULL;
-	tmp->stash = NULL;
-	if (!prev)
-		*stashs = tmp;
-	else
-		prev->next = tmp;
-	return (tmp->stash);
 }
 
 char	*get_next_line(int fd)
 {
-	static t_map	*stashs;
-	t_list			*stash;
+	static t_list	*stashs[MAX_FILES];
 	char			*line;
 	int				line_length;
 
 	if (fd < 0 || BUFFER_SIZE < 1 || fd >= MAX_FILES)
 		return (NULL);
-	stash = get_stash(&stashs, fd);
-	line_length = ft_strlstlen(stash);
-	read_next_line(fd, &stash, &line_length);
-	if (!stash || line_length == 0)
+	line_length = ft_strlstlen(stashs[fd]);
+	read_next_line(fd, &stashs[fd], &line_length);
+	if (!stashs[fd] || line_length == 0)
 		return (NULL);
-	line = get_line(stash, line_length);
-	remove_first_line(&stash);
+	line = get_line(stashs[fd], line_length);
+	remove_first_line(&stashs[fd]);
 	return (line);
 }

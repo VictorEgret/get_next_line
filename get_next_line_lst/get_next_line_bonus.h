@@ -6,7 +6,7 @@
 /*   By: vegret <victor.egret.pro@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 15:25:56 by vegret            #+#    #+#             */
-/*   Updated: 2022/11/10 13:54:14 by vegret           ###   ########.fr       */
+/*   Updated: 2022/11/10 14:34:07 by vegret           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,6 @@ int		strindex(char *str, char c);
 int		ft_strlstlen(t_list *stash);
 t_list	*ft_lstlast(t_list *lst);
 t_list	*ft_lstnew(void);
+void	ft_lstclear(t_list **lst);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: vegret <victor.egret.pro@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 15:26:22 by vegret            #+#    #+#             */
-/*   Updated: 2022/10/28 23:02:53 by vegret           ###   ########.fr       */
+/*   Updated: 2022/11/10 14:37:49 by vegret           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ char	*get_line(t_list *stash, int len)
 
 	result = malloc((len + 1) * sizeof(char));
 	if (!result)
-		return (NULL);
+		return (ft_lstclear(&stash), NULL);
 	i = 0;
 	while (stash)
 	{

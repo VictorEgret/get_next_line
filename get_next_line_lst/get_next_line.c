@@ -6,11 +6,25 @@
 /*   By: vegret <victor.egret.pro@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 15:25:50 by vegret            #+#    #+#             */
-/*   Updated: 2022/11/10 13:46:31 by vegret           ###   ########.fr       */
+/*   Updated: 2022/11/10 15:02:34 by vegret           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+void	ft_lstclear(t_list **lst)
+{
+	t_list	*tmp;
+
+	if (!lst || !*lst)
+		return ;
+	while (*lst)
+	{
+		tmp = (*lst)->next;
+		free(*lst);
+		*lst = tmp;
+	}
+}
 
 void	read_next_line(int fd, t_list **stash, int *line_length)
 {
@@ -20,13 +34,16 @@ void	read_next_line(int fd, t_list **stash, int *line_length)
 
 	rd = BUFFER_SIZE;
 	prev = ft_lstlast(*stash);
-	while (rd == BUFFER_SIZE)
+	new = NULL;
+	while (rd == BUFFER_SIZE && strindex(new->content, '\n') == -1)
 	{
 		new = ft_lstnew();
 		if (!new)
-			break ;
+			return (ft_lstclear(stash));
 		rd = read(fd, new->content, BUFFER_SIZE);
-		if (rd == -1 || rd == 0)
+		if (rd == -1)
+			ft_lstclear(stash);
+		if (rd == 0 || rd == -1)
 			return (free(new));
 		(new->content)[rd] = '\0';
 		if (!prev)
@@ -35,8 +52,6 @@ void	read_next_line(int fd, t_list **stash, int *line_length)
 			prev->next = new;
 		prev = new;
 		*line_length += rd;
-		if (strindex(new->content, '\n') != -1)
-			break ;
 	}
 }
 
